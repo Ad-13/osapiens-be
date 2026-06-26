@@ -3,17 +3,10 @@ import * as yaml from 'js-yaml';
 import { DataSource } from 'typeorm';
 import { Workflow } from '../models/Workflow';
 import { Task } from '../models/Task';
-import {TaskStatus} from "../workers/taskRunner";
-
-export enum WorkflowStatus {
-    Initial = 'initial',
-    InProgress = 'in_progress',
-    Completed = 'completed',
-    Failed = 'failed'
-}
+import { TaskStatus, TaskType, WorkflowStatus } from '../enums';
 
 interface WorkflowStep {
-    taskType: string;
+    taskType: TaskType;
     stepNumber: number;
 }
 
@@ -23,7 +16,7 @@ interface WorkflowDefinition {
 }
 
 export class WorkflowFactory {
-    constructor(private dataSource: DataSource) {}
+    constructor(private dataSource: DataSource) { }
 
     /**
      * Creates a workflow by reading a YAML file and constructing the Workflow and Task entities.

@@ -2,11 +2,12 @@ import { Job } from '../Job';
 import { DataAnalysisJob } from '../DataAnalysisJob';
 import { EmailNotificationJob } from '../EmailNotificationJob';
 import { PolygonAreaJob } from '../PolygonAreaJob';
+import { TaskType } from '../../enums';
 
 const jobMap: Record<string, () => Job> = {
-    'analysis': () => new DataAnalysisJob(),
-    'notification': () => new EmailNotificationJob(),
-    'polygonArea': () => new PolygonAreaJob(),
+    [TaskType.analysis]: () => new DataAnalysisJob(),
+    [TaskType.notification]: () => new EmailNotificationJob(),
+    [TaskType.polygonArea]: () => new PolygonAreaJob(),
 };
 
 export function getJobForTaskType(taskType: string): Job {
