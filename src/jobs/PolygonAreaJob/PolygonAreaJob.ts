@@ -1,6 +1,6 @@
 import type { Feature, GeoJsonObject, Geometry } from "geojson";
-import { Task } from "../models/Task";
-import { Job } from "./Job";
+import { Task } from "../../models/Task";
+import { Job } from "../Job";
 import { area } from "@turf/turf";
 
 export class PolygonAreaJob implements Job {

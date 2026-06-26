@@ -1,7 +1,7 @@
-import { Job } from './Job';
-import { DataAnalysisJob } from './DataAnalysisJob';
-import { EmailNotificationJob } from './EmailNotificationJob';
-import { PolygonAreaJob } from './PolygonAreaJob';
+import { Job } from '../Job';
+import { DataAnalysisJob } from '../DataAnalysisJob';
+import { EmailNotificationJob } from '../EmailNotificationJob';
+import { PolygonAreaJob } from '../PolygonAreaJob';
 
 const jobMap: Record<string, () => Job> = {
     'analysis': () => new DataAnalysisJob(),
