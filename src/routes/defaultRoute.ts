@@ -1,9 +1,9 @@
-import express from "express";
+import express, { Router } from "express";
 import fs from "fs";
 import path from "path";
 import { marked } from "marked";
 
-const router = express.Router();
+const router = Router();
 const staticPath = path.join(__dirname, "../../public");
 router.use("/public", express.static(staticPath));
 

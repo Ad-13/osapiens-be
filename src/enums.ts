@@ -9,6 +9,7 @@ export enum TaskType {
   analysis = 'analysis',
   notification = 'notification',
   polygonArea = 'polygonArea',
+  reportGeneration = 'reportGeneration'
 }
 
 export enum WorkflowStatus {

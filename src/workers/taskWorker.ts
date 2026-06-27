@@ -10,7 +10,8 @@ export async function taskWorker() {
     while (true) {
         const task = await taskRepository.findOne({
             where: { status: TaskStatus.Queued },
-            relations: ['workflow'] // Ensure workflow is loaded
+            relations: { workflow: { tasks: true } },
+            order: { stepNumber: 'ASC' },
         });
 
         if (task) {

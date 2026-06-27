@@ -4,6 +4,7 @@ import { DataSource } from 'typeorm';
 import { Workflow } from '../models/Workflow';
 import { Task } from '../models/Task';
 import { TaskStatus, TaskType, WorkflowStatus } from '../enums';
+import { AppDataSource } from '../data-source';
 
 interface WorkflowStep {
     taskType: TaskType;
@@ -53,3 +54,5 @@ export class WorkflowFactory {
         return savedWorkflow;
     }
 }
+
+export const workflowFactory = new WorkflowFactory(AppDataSource);

@@ -25,6 +25,9 @@ export class Task {
     @Column({ nullable: true, type: 'text' })
     output?: string;
 
+    @Column({ nullable: true, type: 'text' })
+    errorMessage?: string | null;
+
     @Column()
     taskType!: TaskType;
 
