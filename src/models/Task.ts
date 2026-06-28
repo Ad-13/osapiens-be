@@ -34,6 +34,9 @@ export class Task {
     @Column({ default: 1 })
     stepNumber!: number;
 
+    @ManyToOne(() => Task, { nullable: true })
+    dependsOn?: Task | null;
+
     @ManyToOne(() => Workflow, workflow => workflow.tasks)
     workflow!: Workflow;
 }

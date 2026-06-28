@@ -11,3 +11,14 @@ export type WorkflowReportTask =
   Pick<Task, "taskId" | "taskType" | "status" | "errorMessage"> & {
     output: unknown;
   };
+
+export interface WorkflowStep {
+  taskType: TaskType;
+  stepNumber: number;
+  dependsOn?: number; // step number
+}
+
+export interface WorkflowDefinition {
+  name: string;
+  steps: WorkflowStep[];
+}

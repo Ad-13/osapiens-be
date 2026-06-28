@@ -1,12 +1,15 @@
 import { Repository } from 'typeorm';
 import { Task } from '../models/Task';
 import { getJobForTaskType } from '../jobs/JobFactory';
-import { Workflow } from "../models/Workflow";
 import { Result } from "../models/Result";
-import { TaskStatus, WorkflowStatus } from '../enums';
+import { TaskStatus } from '../enums';
+import { WorkflowService } from './WorkflowService';
 
 export class TaskRunner {
-    constructor(private taskRepository: Repository<Task>) { }
+    constructor(
+        private taskRepository: Repository<Task>,
+        private workflowService: WorkflowService,
+    ) { }
 
     /**
      * Runs the appropriate job based on the task's type, managing the task's status.
@@ -44,25 +47,14 @@ export class TaskRunner {
             throw error;
         }
 
-        const workflowRepository = this.taskRepository.manager.getRepository(Workflow);
-        const currentWorkflow = await workflowRepository.findOne({
-            where: { workflowId: task.workflow.workflowId },
-            relations: ['tasks']
-        });
+        await this.workflowService.updateStatus(task.workflow.workflowId);
+    }
 
-        if (currentWorkflow) {
-            const allCompleted = currentWorkflow.tasks.every(t => t.status === TaskStatus.Completed);
-            const anyFailed = currentWorkflow.tasks.some(t => t.status === TaskStatus.Failed);
-
-            if (anyFailed) {
-                currentWorkflow.status = WorkflowStatus.Failed;
-            } else if (allCompleted) {
-                currentWorkflow.status = WorkflowStatus.Completed;
-            } else {
-                currentWorkflow.status = WorkflowStatus.InProgress;
-            }
-
-            await workflowRepository.save(currentWorkflow);
-        }
+    async skipDueToFailedDependency(task: Task): Promise<void> {
+        task.status = TaskStatus.Failed;
+        task.errorMessage = `Skipped: dependency (step ${task.dependsOn?.stepNumber}) failed`;
+        task.progress = null;
+        await this.taskRepository.save(task);
+        await this.workflowService.updateStatus(task.workflow.workflowId);
     }
 }

@@ -3,18 +3,10 @@ import * as yaml from 'js-yaml';
 import { DataSource } from 'typeorm';
 import { Workflow } from '../models/Workflow';
 import { Task } from '../models/Task';
-import { TaskStatus, TaskType, WorkflowStatus } from '../enums';
+import { TaskStatus, WorkflowStatus } from '../enums';
+import { WorkflowDefinition } from './../types';
 import { AppDataSource } from '../data-source';
-
-interface WorkflowStep {
-    taskType: TaskType;
-    stepNumber: number;
-}
-
-interface WorkflowDefinition {
-    name: string;
-    steps: WorkflowStep[];
-}
+import { resolveDependencies } from '../utils';
 
 export class WorkflowFactory {
     constructor(private dataSource: DataSource) { }
@@ -49,7 +41,12 @@ export class WorkflowFactory {
             return task;
         });
 
-        await taskRepository.save(tasks);
+        const savedTasks = await taskRepository.save(tasks);
+
+        const dependents = resolveDependencies(workflowDef.steps, savedTasks);
+        if (dependents.length > 0) {
+            await taskRepository.save(dependents);
+        }
 
         return savedWorkflow;
     }
