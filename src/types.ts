@@ -26,3 +26,10 @@ export interface WorkflowDefinition {
 export type WorkflowFinalResult = WorkflowReport & {
   status: WorkflowStatus;
 };
+
+export interface WorkflowStatusSummary {
+  workflowId: string;
+  status: WorkflowStatus;
+  completedTasks: number;
+  totalTasks: number;
+}

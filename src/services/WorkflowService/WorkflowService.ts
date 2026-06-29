@@ -2,7 +2,7 @@ import { Repository } from 'typeorm';
 import { Workflow } from '../../models/Workflow';
 import { TaskStatus, WorkflowStatus } from '../../enums';
 import { buildWorkflowReport } from '../../utils';
-import { WorkflowFinalResult } from '../../types';
+import { WorkflowFinalResult, WorkflowStatusSummary } from '../../types';
 import { Task } from '../../models/Task';
 
 export class WorkflowService {
@@ -19,6 +19,31 @@ export class WorkflowService {
     this.attachFinalResultIfSettled(workflow);
 
     await this.workflowRepository.save(workflow);
+  }
+
+  async getStatusSummary(workflowId: string): Promise<WorkflowStatusSummary | null> {
+    const workflow = await this.workflowRepository.findOne({
+      where: { workflowId },
+      relations: ['tasks'],
+    });
+
+    if (!workflow) return null;
+
+    const totalTasks = workflow.tasks.length;
+    const completedTasks = workflow.tasks.filter(
+      t => t.status === TaskStatus.Completed
+    ).length;
+
+    return {
+      workflowId: workflow.workflowId,
+      status: workflow.status,
+      completedTasks,
+      totalTasks,
+    };
+  }
+
+  async getById(workflowId: string): Promise<Workflow | null> {
+    return this.workflowRepository.findOne({ where: { workflowId } });
   }
 
   private deriveStatus(tasks: Task[]): WorkflowStatus {
