@@ -1,1 +1,24 @@
-node_modules
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+build/
+
+# Local SQLite database (regenerated on every run)
+*.sqlite
+*.sqlite3
+database.sqlite
+
+# Logs
+*.log
+npm-debug.log*
+
+# Env / secrets
+.env
+.env.local
+
+# OS / editor junk
+.DS_Store
+.idea/
+.vscode/
