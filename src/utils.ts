@@ -1,5 +1,6 @@
+import { TaskStatus } from "./enums";
 import { Task } from "./models/Task";
-import { WorkflowStep } from "./types";
+import { WorkflowReport, WorkflowReportTask, WorkflowStep } from "./types";
 
 export function resolveDependencies(steps: WorkflowStep[], tasks: Task[]): Task[] {
   const taskByStep = new Map<number, Task>(tasks.map(t => [t.stepNumber, t]));
@@ -25,4 +26,25 @@ export function resolveDependencies(steps: WorkflowStep[], tasks: Task[]): Task[
   }
 
   return dependents;
+}
+
+export function buildWorkflowReport(workflowId: string, tasks: Task[]): WorkflowReport {
+  const ordered = [...tasks].sort((a, b) => a.stepNumber - b.stepNumber);
+
+  const reportTasks: WorkflowReportTask[] = ordered.map(t => ({
+    taskId: t.taskId,
+    taskType: t.taskType,
+    status: t.status,
+    output: t.output ? JSON.parse(t.output) : undefined,
+    errorMessage: t.errorMessage ?? undefined,
+  }));
+
+  const completed = reportTasks.filter(t => t.status === TaskStatus.Completed).length;
+  const failed = reportTasks.filter(t => t.status === TaskStatus.Failed).length;
+
+  return {
+    workflowId,
+    tasks: reportTasks,
+    finalReport: `Aggregated ${reportTasks.length} task(s): ${completed} completed, ${failed} failed.`,
+  };
 }

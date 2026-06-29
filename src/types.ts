@@ -1,4 +1,4 @@
-import { TaskStatus, TaskType } from "./enums";
+import { TaskType, WorkflowStatus } from "./enums";
 import { Task } from "./models/Task";
 
 export interface WorkflowReport {
@@ -22,3 +22,7 @@ export interface WorkflowDefinition {
   name: string;
   steps: WorkflowStep[];
 }
+
+export type WorkflowFinalResult = WorkflowReport & {
+  status: WorkflowStatus;
+};
