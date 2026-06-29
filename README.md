@@ -116,6 +116,20 @@ Returns the aggregated final result of a completed workflow.
 
 ## Testing the New Features Manually
 
+```bash
+# 1) create a workflow (capture workflowId from the response)
+curl -s -X POST http://localhost:3000/analysis \
+  -H "Content-Type: application/json" \
+  -d '{"clientId":"client123","geoJson":{"type":"Polygon","coordinates":[[[-63.62,-10.31],[-63.62,-10.37],[-63.61,-10.37],[-63.61,-10.31],[-63.62,-10.31]]]}}'
+
+# 2) poll status (Task 5)
+curl -s http://localhost:3000/workflow//status
+
+# 3) results (Task 6): 400 until completed, then 200 with finalResult
+curl -s http://localhost:3000/workflow//results
+```
+
+
 Postman:
 # 1) create a workflow (capture workflowId from the response)
 POST http://localhost:3000/analysis \
